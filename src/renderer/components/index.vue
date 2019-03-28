@@ -1,20 +1,23 @@
 <template>
-    <el-container>
-      <el-aside :width="asideWidth" >
+    <el-container v-bind:style="{height:windowHeight+'px'}">
+      <el-aside :width="asideWidth" class="aside-menu">
         <connet-setting @set="onSetOption" @cancel="onMenu" :ops="connetOptions">
-
         </connet-setting>
       </el-aside>
       <el-container>
         <i class="el-icon-menu menu-pos" @click="onMenu"></i>
-          <el-header><h1 class="header-title">ADS测试工具</h1></el-header>
+          <el-header>
+            <h1 class="header-title">ADS测试工具</h1>
+
+            </el-header>
           <el-main>
-            <div class="nav-button">
+              <div class="nav-button">
                 <el-button size="small" type="primary" @click="onTestAds">通讯测试</el-button>
-                <el-button size="small" type="warning" >断开连接</el-button>
-                <el-button size="small" type="info" >设置</el-button>
-            </div>
-              <variable-items></variable-items>
+                <el-button size="small" type="warning" >开启监听</el-button>
+                <el-button size="small" @click="onGetSymbolList">获取SYMBOL列表</el-button>
+                <el-button size="small" type="danger" >全部写入</el-button>
+              </div>
+              <variable-items :lists="variableLists"></variable-items>
               <el-button  class="add-item" type="primary" icon="el-icon-plus" circle @click="onAddOne"></el-button>
               <variable-info :addOne="showAdd" @close='onAddOneClose'></variable-info>   
           </el-main>
@@ -34,7 +37,9 @@ export default {
     return {
       showAdd: false,
       asideWidth: '0',
-      connetOptions: {}
+      connetOptions: {},
+      variableLists: [],
+      windowHeight: 0
     }
   },
   components: {
@@ -44,6 +49,12 @@ export default {
 
   },
   created () {
+    this.windowHeight = document.documentElement.clientHeight - 20
+    window.onresize = () => {
+      this.windowHeight = document.documentElement.clientHeight - 20
+      console.log(this.windowHeight)
+    }
+
     ipcRenderer.on(ipc.TEST, (event, arg) => {
       let strArg = ''
       for (let item in arg) {
@@ -53,6 +64,11 @@ export default {
         confirmButtonText: '确定',
         dangerouslyUseHTMLString: true
       }).catch(_ => {})
+    })
+
+    ipcRenderer.on(ipc.GET_SYMBOL_LIST, (event, arg) => {
+      this.variableLists = arg
+      console.log(arg)
     })
   },
   methods: {
@@ -83,6 +99,11 @@ export default {
     onSetOption (options) {
       this.onTestAds(options)
       window.localStorage.setItem(conf.CONNECT_OPTIONS, JSON.stringify(options))
+    },
+    onGetSymbolList () {
+      const options = window.localStorage.getItem(conf.CONNECT_OPTIONS)
+      this.connetOptions = JSON.parse(options)
+      ipcRenderer.send(ipc.GET_SYMBOL_LIST, this.connetOptions)
     }
   }
 
@@ -94,15 +115,26 @@ export default {
     text-align: center;
 }
 .add-item{
-float: right;
-position: relative;
-top: -70px;
-left: -30px;
+/* float: right; */
+position: fixed;
+/* top: -70px;
+left: -30px; */
+right: 10%;
+bottom: 10%;
 
 }
+body,#app,.el-container,.el-main{
+  height: 100%;
+}
 .nav-button{
-  position: relative;
-  top: -20px;
+  /* position: relative; */
+  /* top: -20px; */
+  /* position: fixed; */
+  display: flex;
+  justify-content:space-around;
+  padding-bottom: 10px;
+  z-index: 999;
+  width: 100%;
 }
 .menu-pos{
   position: fixed;
@@ -117,5 +149,9 @@ left: -30px;
   word-break: break-all;
   overflow: hidden;
   padding-left:50px;   
+}
+body .aside-menu{
+  height: 100%;
+  overflow-y: scroll;
 }
 </style>

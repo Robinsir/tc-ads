@@ -59,25 +59,10 @@ export default {
     onCancel () {
       this.$emit('cancel')
     }
-  },
-  data () {
-    return {
-      // connectInfo: {
-      //   host: '',
-      //   amsNetIdTarget: '',
-      //   amsNetIdSource: '',
-      //   amsPortTarget: 0,
-      //   amsPortSource: 0,
-      //   port: 0,
-      //   timeout: 0
-      // }
-      // options: {}
-    }
   }
 
 }
 </script>
-
 <style scoped>
 body .input-box{
     /* width: 70%; */
@@ -95,4 +80,5 @@ body .input-box{
 /deep/ .el-form>.el-form-item{
     margin-bottom: 0px;
 }
+
 </style>
