@@ -52,7 +52,6 @@ export default {
     this.windowHeight = document.documentElement.clientHeight - 20
     window.onresize = () => {
       this.windowHeight = document.documentElement.clientHeight - 20
-      console.log(this.windowHeight)
     }
 
     ipcRenderer.on(ipc.TEST, (event, arg) => {
@@ -115,10 +114,7 @@ export default {
     text-align: center;
 }
 .add-item{
-/* float: right; */
 position: fixed;
-/* top: -70px;
-left: -30px; */
 right: 10%;
 bottom: 10%;
 
@@ -127,9 +123,6 @@ body,#app,.el-container,.el-main{
   height: 100%;
 }
 .nav-button{
-  /* position: relative; */
-  /* top: -20px; */
-  /* position: fixed; */
   display: flex;
   justify-content:space-around;
   padding-bottom: 10px;

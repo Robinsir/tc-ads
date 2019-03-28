@@ -12,10 +12,10 @@
         <el-form-item label="数据类型:" prop="type">
             <el-select class="input-box" v-model="readInfo.type" filterable placeholder="请选择">
             <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
+                v-for="(value,key,index) in options"
+                :key="index"
+                :label="key"
+                :value="value">
                 </el-option>
             </el-select>
         </el-form-item>
@@ -30,7 +30,8 @@
     </el-dialog>
 </template>
 
-<script >
+<script>
+import * as conf from '@/conf'
 export default {
   props: {
     addOne: false
@@ -45,6 +46,9 @@ export default {
       }
 
     }
+  },
+  mounted () {
+    this.options = conf.TYPE_LENGTH
   },
   methods: {
     onReset () {

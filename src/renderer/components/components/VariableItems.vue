@@ -41,8 +41,12 @@
           align="center"
           property="option" 
           label="操作">
-          <a class="option write">写入</a>
-          <a class="option delete" size='mini'>删除</a>
+          <template slot-scope="scope">
+            <div>
+            <a class="option write">写入</a>
+            <a class="option delete" size='mini' @click="onDeleteItem(scope.$index)">删除</a>
+            </div>
+          </template>
         </el-table-column>
         </el-table>
     </div>
@@ -56,6 +60,12 @@ export default {
   computed: {
     listTable () {
       return this.lists
+    }
+  },
+  methods: {
+    onDeleteItem (item) {
+      console.log(item)
+      this.listTable.splice(item, 1)
     }
   }
 
