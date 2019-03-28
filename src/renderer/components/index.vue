@@ -1,7 +1,9 @@
 <template>
     <el-container>
       <el-aside :width="asideWidth" >
-        <connet-setting></connet-setting>
+        <connet-setting @set="onSetOption" @cancel="onMenu" :ops="connetOptions">
+
+        </connet-setting>
       </el-aside>
       <el-container>
         <i class="el-icon-menu menu-pos" @click="onMenu"></i>
@@ -23,6 +25,7 @@
 <script>
 import {ipcRenderer} from 'electron'
 import * as ipc from '@/../ipc'
+import * as conf from '@/conf'
 import VariableItems from './components/VariableItems'
 import VariableInfo from './components/VariableInfo'
 import ConnetSetting from './components/ConnetSetting'
@@ -30,7 +33,8 @@ export default {
   data () {
     return {
       showAdd: false,
-      asideWidth: '0'
+      asideWidth: '0',
+      connetOptions: {}
     }
   },
   components: {
@@ -45,10 +49,10 @@ export default {
       for (let item in arg) {
         strArg = strArg + '>' + item + ':' + arg[item] + ' <br />'
       }
-      this.$alert(strArg, '测试结果', {
+      this.$alert(strArg, '通讯测试结果', {
         confirmButtonText: '确定',
         dangerouslyUseHTMLString: true
-      })
+      }).catch(_ => {})
     })
   },
   methods: {
@@ -61,13 +65,24 @@ export default {
     onMenu () {
       if (this.asideWidth === '0') {
         this.asideWidth = '30%'
+        const options = window.localStorage.getItem(conf.CONNECT_OPTIONS)
+        this.connetOptions = JSON.parse(options)
+        console.log(options)
       } else {
         this.asideWidth = '0'
       }
     },
-    onTestAds () {
-      console.log('connecting')
-      ipcRenderer.send(ipc.TEST)
+    onTestAds (options) {
+      console.log('connecting', options)
+      if (options.port === undefined) {
+        options = window.localStorage.getItem(conf.CONNECT_OPTIONS)
+        options = JSON.parse(options)
+      }
+      ipcRenderer.send(ipc.TEST, options)
+    },
+    onSetOption (options) {
+      this.onTestAds(options)
+      window.localStorage.setItem(conf.CONNECT_OPTIONS, JSON.stringify(options))
     }
   }
 

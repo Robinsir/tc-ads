@@ -27,6 +27,8 @@ let options = {
 function adsTest () {
   console.log('conneting...')
   ipcMain.on(ipc.TEST, (event, arg) => {
+    options = arg
+    console.log(options)
     let client = ads.connect(options, function () {
       this.readDeviceInfo(function (err, result) {
         if (err) console.log(err)

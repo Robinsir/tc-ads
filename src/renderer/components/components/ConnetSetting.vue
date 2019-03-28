@@ -2,29 +2,32 @@
     <div>
         <h1>设置</h1>
         <div class="sub-button test">
-            <!-- <el-button @click="onReset()">清空</el-button> -->
-            <el-button type="danger" icon="el-icon-delete" size="mini" circle></el-button>
-            <el-button type="success" icon="el-icon-check" size="mini" circle></el-button>
-            
-            <!-- <el-button type="primary">添加</el-button> -->
+            <el-button type="danger" icon="el-icon-delete" size="mini" circle @click="onCancel"></el-button>
+            <el-button type="success" icon="el-icon-check" size="mini" circle @click="onSucceed"></el-button>
         </div>
-        <el-form :model="connectInfo" status-icon>
-        <el-form-item label="TargetAMS:" prop="name">
-            <el-input size='mini' class="input-box" type="text" v-model="connectInfo.targetAMS" autocomplete="off">
 
+        <el-form :model="connectInfo" status-icon>
+
+        <el-form-item label="Host:" prop="name">
+            <el-input size='mini' class="input-box" type="text" v-model="connectInfo.host" autocomplete="off">
             </el-input>
         </el-form-item>
 
-        <el-form-item label="TargetAMS Port:" prop="type">
-            <el-input size='mini' class="input-box" type="text" v-model.number="connectInfo.targetAMSPort" autocomplete="off"></el-input>
+        <el-form-item label="AMS Target:" prop="name">
+            <el-input size='mini' class="input-box" type="text" v-model="connectInfo.amsNetIdTarget" autocomplete="off">
+            </el-input>
         </el-form-item>
 
-        <el-form-item label="SourceAMS:" prop="type">
-            <el-input size='mini' class="input-box" type="text" v-model="connectInfo.sourceAMS" autocomplete="off"></el-input>
+        <el-form-item label="AMS Target Port:" prop="type">
+            <el-input size='mini' class="input-box" type="text" v-model.number="connectInfo.amsPortTarget" autocomplete="off"></el-input>
         </el-form-item>
 
-        <el-form-item label="SourceAMS Port:" prop="type">
-            <el-input size='mini' class="input-box" type="text" v-model.number="connectInfo.sourceAMSPort" autocomplete="off"></el-input>
+        <el-form-item label="AMS Source:" prop="type">
+            <el-input size='mini' class="input-box" type="text" v-model="connectInfo.amsNetIdSource" autocomplete="off"></el-input>
+        </el-form-item>
+
+        <el-form-item label="AMS Source Port:" prop="type">
+            <el-input size='mini' class="input-box" type="text" v-model.number="connectInfo.amsPortSource" autocomplete="off"></el-input>
         </el-form-item>
 
         <el-form-item label="Port:" prop="type">
@@ -42,39 +45,33 @@
 <script >
 export default {
   props: {
-    addOne: false
+    ops: Object
   },
   computed: {
-    addOneShow: {
-      get () {
-        return this.addOne
-      },
-      set (val) {
-        this.$emit('close', val)
-      }
-
+    connectInfo () {
+      return this.ops
     }
   },
   methods: {
-    onReset () {
-      this.readInfo = {
-        name: '',
-        type: '',
-        prop: ''
-      }
+    onSucceed () {
+      this.$emit('set', this.connectInfo)
+    },
+    onCancel () {
+      this.$emit('cancel')
     }
   },
   data () {
     return {
-      connectInfo: {
-        targetAMS: '',
-        sourceAMS: '',
-        targetAMSPort: 0,
-        sourceAMSPort: 0,
-        port: 0,
-        timeout: 0
-      },
-      options: []
+      // connectInfo: {
+      //   host: '',
+      //   amsNetIdTarget: '',
+      //   amsNetIdSource: '',
+      //   amsPortTarget: 0,
+      //   amsPortSource: 0,
+      //   port: 0,
+      //   timeout: 0
+      // }
+      // options: {}
     }
   }
 
