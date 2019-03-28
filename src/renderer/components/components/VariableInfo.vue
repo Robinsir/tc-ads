@@ -23,8 +23,8 @@
             <el-input class="input-box" v-model.number="readInfo.prop"></el-input>
         </el-form-item>
         <div class="sub-button">
-            <el-button @click="onReset()">重置</el-button>
-            <el-button type="primary">完成</el-button>
+            <el-button @click="onReset()">清空</el-button>
+            <el-button type="primary">添加</el-button>
         </div>
         </el-form>
     </el-dialog>
@@ -69,12 +69,12 @@ export default {
 }
 </script>
 
-<style scope>
+<style scoped>
 body .input-box{
     width: 70%;
 }  
 
-.el-form-item__label{
+/deep/ .el-form-item__label{
     width: 20%;
 }
 
