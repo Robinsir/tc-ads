@@ -8,7 +8,7 @@
           <el-header><h1 class="header-title">ADS测试工具</h1></el-header>
           <el-main>
             <div class="nav-button">
-                <el-button size="small" type="primary">通讯测试</el-button>
+                <el-button size="small" type="primary" @click="onTestAds">通讯测试</el-button>
                 <el-button size="small" type="warning" >断开连接</el-button>
                 <el-button size="small" type="info" >设置</el-button>
             </div>
@@ -21,6 +21,8 @@
 </template>
 
 <script>
+import {ipcRenderer} from 'electron'
+import * as ipc from '@/../ipc'
 import VariableItems from './components/VariableItems'
 import VariableInfo from './components/VariableInfo'
 import ConnetSetting from './components/ConnetSetting'
@@ -37,6 +39,18 @@ export default {
     ConnetSetting
 
   },
+  created () {
+    ipcRenderer.on(ipc.TEST, (event, arg) => {
+      let strArg = ''
+      for (let item in arg) {
+        strArg = strArg + '>' + item + ':' + arg[item] + ' <br />'
+      }
+      this.$alert(strArg, '测试结果', {
+        confirmButtonText: '确定',
+        dangerouslyUseHTMLString: true
+      })
+    })
+  },
   methods: {
     onAddOne () {
       this.showAdd = true
@@ -50,6 +64,10 @@ export default {
       } else {
         this.asideWidth = '0'
       }
+    },
+    onTestAds () {
+      console.log('connecting')
+      ipcRenderer.send(ipc.TEST)
     }
   }
 
@@ -76,5 +94,13 @@ left: -30px;
   cursor: pointer;
   margin: 20px 20px;
   font-size: 25px;
+  z-index: 999;
+  /*flex 不生效*/
+}
+.el-message-box__message p{
+    word-wrap: break-word;
+  word-break: break-all;
+  overflow: hidden;
+  padding-left:50px;   
 }
 </style>
