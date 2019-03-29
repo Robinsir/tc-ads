@@ -2,6 +2,7 @@ import { ipcMain } from 'electron'
 import * as ipc from '../ipc'
 import * as ads from 'node-ads'
 import typeCover from './TypeCover'
+import * as conf from '@/conf'
 let options = {}
 let client = null
 function adsTest () {
@@ -49,7 +50,6 @@ function getSymbolList () {
 }
 
 function getRealValue () {
-  console.log('get msg...')
   ipcMain.on(ipc.GET_LISTEN_VALUE, (event, arg) => {
     const list = arg.list
     let handleList = []
@@ -62,7 +62,7 @@ function getRealValue () {
         bytelength: 0
       }
       handle.symname = list[item].name
-      handle.bytelength = list[item].size
+      handle.bytelength = list[item].size || conf.TYPE_LENGTH[list[item].type]
       handleList.push(handle)
     }
     console.log('TCL: getRealValue -> handleList', handleList)
@@ -84,14 +84,12 @@ function getRealValue () {
         }
       })
       const result = typeCover(dataType, handle.value)
-      // typeCover(handle.symname, dataType)
       console.log('TCL: getRealValue -> typeCover(handle.symname, dataType)', result)
       event.sender.send(ipc.GET_LISTEN_VALUE,
         {
           name: handle.symname,
           value: result
         })
-      // client.end()
     })
 
     process.on('exit', function () {
@@ -109,8 +107,32 @@ function getRealValue () {
     client.end()
   })
 }
+
+function writeValue () {
+  console.log('get msg...')
+  ipcMain.on(ipc.WRITE_A_VALUE, (event, arg) => {
+    let handle = {
+      symname: '',
+      bytelength: '',
+      propname: 'value'
+    }
+    options = arg.ops
+    handle.symname = arg.handle.name
+    handle.bytelength = arg.handle.size || conf.TYPE_LENGTH[arg.handle.type]
+    client = ads.connect(options, function () {
+      this.write(handle, function (err) {
+        if (err) console.log(err)
+      })
+    })
+  })
+}
+
+// function multiWriteValue () {
+
+// }
 export default function () {
   adsTest()
   getSymbolList()
   getRealValue()
+  writeValue()
 }

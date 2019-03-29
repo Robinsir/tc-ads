@@ -44,12 +44,12 @@
 
 <script >
 export default {
-  props: {
-    ops: Object
+  created () {
+    this.connetInfo = this.$store.getters.GET_OPTIONS
   },
-  computed: {
-    connectInfo () {
-      return this.ops
+  data () {
+    return {
+      connectInfo: {}
     }
   },
   methods: {

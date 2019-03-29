@@ -1,14 +1,13 @@
 <template>
     <el-container v-bind:style="{height:windowHeight+'px'}">
       <el-aside :width="asideWidth" class="aside-menu">
-        <connet-setting @set="onSetOption" @cancel="onMenu" :ops="connetOptions">
+        <connet-setting @set="onSetOption" @cancel="onMenu">
         </connet-setting>
       </el-aside>
       <el-container>
         <i class="el-icon-menu menu-pos" @click="onMenu"></i>
           <el-header>
             <h1 class="header-title">ADS测试工具</h1>
-
             </el-header>
           <el-main>
               <div class="nav-button">
@@ -17,7 +16,7 @@
                 <el-button size="small" @click="onGetSymbolList">获取SYMBOL列表</el-button>
                 <el-button size="small" type="danger" >全部写入</el-button>
               </div>
-              <variable-items :lists="variableLists" @del="onDelItem"></variable-items>
+              <variable-items :lists="variableLists" @change="onListsChange"></variable-items>
               <el-button  class="add-item" type="primary" icon="el-icon-plus" circle @click="onAddOne"></el-button>
               <variable-info :addOne="showAdd" @close='onAddOneClose' @add="onAdd2List"></variable-info>   
           </el-main>
@@ -37,7 +36,6 @@ export default {
     return {
       showAdd: false,
       asideWidth: '0',
-      connetOptions: {},
       variableLists: [],
       windowHeight: 0,
       isOnListening: false
@@ -82,6 +80,16 @@ export default {
       console.log('TCL: created -> this.variableLists', this.variableLists)
     })
   },
+  computed: {
+    connetOptions: {
+      get () {
+        return this.$store.getters.GET_OPTIONS
+      },
+      set (ops) {
+        this.$store.commit('SAVE_OPTIONS', ops)
+      }
+    }
+  },
   methods: {
     onAddOne () {
       this.showAdd = true
@@ -95,30 +103,20 @@ export default {
     onMenu () {
       if (this.asideWidth === '0') {
         this.asideWidth = '30%'
-        const options = window.localStorage.getItem(conf.CONNECT_OPTIONS)
-        this.connetOptions = JSON.parse(options)
-        console.log(options)
       } else {
         this.asideWidth = '0'
       }
     },
-    onDelItem (item) {
-      this.variableLists.splice(item, 1)
+    onListsChange (list) {
+      this.variableLists = list
     },
-    onTestAds (options) {
-      console.log('connecting', options)
-      if (options.port === undefined) {
-        options = window.localStorage.getItem(conf.CONNECT_OPTIONS)
-        options = JSON.parse(options)
-      }
-      ipcRenderer.send(ipc.TEST, options)
+    onTestAds () {
+      ipcRenderer.send(ipc.TEST, this.connetOptions)
     },
     onListening () {
       this.isOnListening = !this.isOnListening
       if (this.isOnListening) {
         const list = this.variableLists
-        const options = window.localStorage.getItem(conf.CONNECT_OPTIONS)
-        this.connetOptions = JSON.parse(options)
         let ops = this.connetOptions
         ipcRenderer.send(ipc.GET_LISTEN_VALUE, {ops, list})
       } else {
@@ -126,8 +124,12 @@ export default {
       }
     },
     onSetOption (options) {
-      this.onTestAds(options)
-      window.localStorage.setItem(conf.CONNECT_OPTIONS, JSON.stringify(options))
+      console.log('run....')
+      // this.connetOptions = options
+      const options1 = window.localStorage.getItem(conf.CONNECT_OPTIONS)
+      this.connetOptions = JSON.parse(options1)
+      // this.$store.commit('SAVE_OPTIONS', options)
+      this.onTestAds()
     },
     onGetSymbolList () {
       const options = window.localStorage.getItem(conf.CONNECT_OPTIONS)

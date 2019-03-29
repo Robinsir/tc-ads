@@ -34,10 +34,14 @@
           </template>
         </el-table-column>
         <el-table-column
-           align="center"
-          property="write" 
+          align="center"
           label="写入值">
-          <el-input size="mini" type="text" class="write-value"></el-input>
+          <!-- <el-input size="mini" class="write-value" v-model="test2" >
+          </el-input> -->
+          <template slot-scope="scope">
+          <el-input size="mini" class="write-value" v-model.number="scope.row.write" @change="onChange">
+          </el-input>
+          </template>
         </el-table-column>
         <el-table-column
           align="center"
@@ -45,7 +49,7 @@
           label="操作">
           <template slot-scope="scope">
             <div>
-            <a class="option write">写入</a>
+            <a class="option write" @click="onWriteValue(scope.row)">写入</a>
             <a class="option delete" size='mini' @click="onDeleteItem(scope.$index)">删除</a>
             </div>
           </template>
@@ -54,6 +58,7 @@
     </div>
 </template>
 <script>
+import {ipcRenderer} from 'electron'
 export default {
   name: 'varialbe-itmes',
   props: {
@@ -66,8 +71,14 @@ export default {
   },
   methods: {
     onDeleteItem (item) {
-      console.log(item)
-      this.$emit('del', item)
+      this.listTable.splice(item, 1)
+      this.onChange()
+    },
+    onChange () {
+      this.$emit('change', this.listTable)
+    },
+    onWriteValue (item) {
+      ipcRenderer.send()
     }
   }
 
