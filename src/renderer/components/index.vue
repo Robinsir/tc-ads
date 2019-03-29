@@ -13,13 +13,13 @@
           <el-main>
               <div class="nav-button">
                 <el-button size="small" type="primary" @click="onTestAds">通讯测试</el-button>
-                <el-button size="small" type="warning" >开启监听</el-button>
+                <el-button size="small" type="warning" @click="onListening">{{isOnListening?'关闭':'开启'}}监听</el-button>
                 <el-button size="small" @click="onGetSymbolList">获取SYMBOL列表</el-button>
                 <el-button size="small" type="danger" >全部写入</el-button>
               </div>
-              <variable-items :lists="variableLists"></variable-items>
+              <variable-items :lists="variableLists" @del="onDelItem"></variable-items>
               <el-button  class="add-item" type="primary" icon="el-icon-plus" circle @click="onAddOne"></el-button>
-              <variable-info :addOne="showAdd" @close='onAddOneClose'></variable-info>   
+              <variable-info :addOne="showAdd" @close='onAddOneClose' @add="onAdd2List"></variable-info>   
           </el-main>
       </el-container>
     </el-container>
@@ -39,7 +39,8 @@ export default {
       asideWidth: '0',
       connetOptions: {},
       variableLists: [],
-      windowHeight: 0
+      windowHeight: 0,
+      isOnListening: false
     }
   },
   components: {
@@ -69,6 +70,17 @@ export default {
       this.variableLists = arg
       console.log(arg)
     })
+
+    ipcRenderer.on(ipc.GET_LISTEN_VALUE, (event, arg) => {
+      this.variableLists.forEach((e, index) => {
+        if (e.name === arg.name) {
+          e.value = arg.value
+          // this.$set(this.variableLists, index, e)
+        }
+      })
+      this.$set(this.variableLists)
+      console.log('TCL: created -> this.variableLists', this.variableLists)
+    })
   },
   methods: {
     onAddOne () {
@@ -76,6 +88,9 @@ export default {
     },
     onAddOneClose (val) {
       this.showAdd = false
+    },
+    onAdd2List (val) {
+      this.variableLists.push(val)
     },
     onMenu () {
       if (this.asideWidth === '0') {
@@ -87,6 +102,9 @@ export default {
         this.asideWidth = '0'
       }
     },
+    onDelItem (item) {
+      this.variableLists.splice(item, 1)
+    },
     onTestAds (options) {
       console.log('connecting', options)
       if (options.port === undefined) {
@@ -94,6 +112,18 @@ export default {
         options = JSON.parse(options)
       }
       ipcRenderer.send(ipc.TEST, options)
+    },
+    onListening () {
+      this.isOnListening = !this.isOnListening
+      if (this.isOnListening) {
+        const list = this.variableLists
+        const options = window.localStorage.getItem(conf.CONNECT_OPTIONS)
+        this.connetOptions = JSON.parse(options)
+        let ops = this.connetOptions
+        ipcRenderer.send(ipc.GET_LISTEN_VALUE, {ops, list})
+      } else {
+        ipcRenderer.send(ipc.CLOSE_LISTEN_VALUE)
+      }
     },
     onSetOption (options) {
       this.onTestAds(options)
@@ -117,7 +147,7 @@ export default {
 position: fixed;
 right: 10%;
 bottom: 10%;
-
+z-index: 999;
 }
 body,#app,.el-container,.el-main{
   height: 100%;

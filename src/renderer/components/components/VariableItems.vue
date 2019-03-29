@@ -26,10 +26,12 @@
         >
         </el-table-column>
         <el-table-column
-          property="read"
           label="读取值"
           align="center"
         >
+        <template slot-scope="scope">
+          {{scope.row.value}}
+          </template>
         </el-table-column>
         <el-table-column
            align="center"
@@ -65,7 +67,7 @@ export default {
   methods: {
     onDeleteItem (item) {
       console.log(item)
-      this.listTable.splice(item, 1)
+      this.$emit('del', item)
     }
   }
 

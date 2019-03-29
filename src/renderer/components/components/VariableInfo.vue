@@ -15,16 +15,16 @@
                 v-for="(value,key,index) in options"
                 :key="index"
                 :label="key"
-                :value="value">
+                :value="key">
                 </el-option>
             </el-select>
         </el-form-item>
-        <el-form-item label="属性名:" prop="prop">
-            <el-input class="input-box" v-model.number="readInfo.prop"></el-input>
+        <el-form-item label="备注:" prop="comment">
+            <el-input class="input-box" v-model.number="readInfo.comment"></el-input>
         </el-form-item>
         <div class="sub-button">
             <el-button @click="onReset()">清空</el-button>
-            <el-button type="primary">添加</el-button>
+            <el-button type="primary" @click="onAddOne">添加</el-button>
         </div>
         </el-form>
     </el-dialog>
@@ -55,16 +55,23 @@ export default {
       this.readInfo = {
         name: '',
         type: '',
-        prop: ''
+        comment: '',
+        size: 0
       }
+    },
+    onAddOne () {
+      this.readInfo.size = this.options[this.readInfo.type]
+      this.$emit('add', this.readInfo)
+      console.log(this.readInfo)
     }
+
   },
   data () {
     return {
       readInfo: {
         name: '',
         type: '',
-        prop: ''
+        size: 0
       },
       options: []
     }

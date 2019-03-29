@@ -1,2 +1,4 @@
 export const TEST = 'TEST'
 export const GET_SYMBOL_LIST = 'GET_SYMBOL_LIST'
+export const GET_LISTEN_VALUE = 'GET_LISTEN_VALUE'
+export const CLOSE_LISTEN_VALUE = 'CLOSE_LISTEN_VALUE'

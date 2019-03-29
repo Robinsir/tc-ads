@@ -1,9 +1,9 @@
 import { ipcMain } from 'electron'
 import * as ipc from '../ipc'
 import * as ads from 'node-ads'
-
+import typeCover from './TypeCover'
 let options = {}
-let client
+let client = null
 function adsTest () {
   console.log('conneting...')
   ipcMain.on(ipc.TEST, (event, arg) => {
@@ -47,7 +47,70 @@ function getSymbolList () {
     })
   })
 }
+
+function getRealValue () {
+  console.log('get msg...')
+  ipcMain.on(ipc.GET_LISTEN_VALUE, (event, arg) => {
+    const list = arg.list
+    let handleList = []
+    options = arg.ops
+
+    // change data format
+    for (let item = 0; item < list.length; item++) {
+      let handle = {
+        symname: '',
+        bytelength: 0
+      }
+      handle.symname = list[item].name
+      handle.bytelength = list[item].size
+      handleList.push(handle)
+    }
+    console.log('TCL: getRealValue -> handleList', handleList)
+    // listen
+    client.end()
+    client = ads.connect(options, function () {
+      // this.notify(myHandle)
+      for (let item of handleList) {
+        client.notify(item)
+      }
+    })
+
+    client.on('notification', function (handle) {
+    //  console.log('Get value', handle.symname, handle.value, handle)
+      let dataType = null
+      list.forEach(e => {
+        if (e.name === handle.symname) {
+          dataType = e.type
+        }
+      })
+      const result = typeCover(dataType, handle.value)
+      // typeCover(handle.symname, dataType)
+      console.log('TCL: getRealValue -> typeCover(handle.symname, dataType)', result)
+      event.sender.send(ipc.GET_LISTEN_VALUE,
+        {
+          name: handle.symname,
+          value: result
+        })
+      // client.end()
+    })
+
+    process.on('exit', function () {
+      console.log('exit')
+    })
+
+    process.on('SIGINT', function () {
+      client.end(function () {
+        process.exit()
+      })
+    })
+  })
+
+  ipcMain.on(ipc.CLOSE_LISTEN_VALUE, (event, arg) => {
+    client.end()
+  })
+}
 export default function () {
   adsTest()
   getSymbolList()
+  getRealValue()
 }
