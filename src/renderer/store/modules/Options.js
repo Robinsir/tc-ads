@@ -5,7 +5,6 @@ const state = {
 
 const mutations = {
   SAVE_OPTIONS (state, ops) {
-    console.log('save_options...')
     window.localStorage.setItem(conf.CONNECT_OPTIONS, JSON.stringify(ops))
     state.Options = ops
   },
@@ -13,15 +12,18 @@ const mutations = {
     state.Options = ops
   }
 }
+const actions = {
+
+  GET_INIT_VALUE (context) {
+    let options = window.localStorage.getItem(conf.CONNECT_OPTIONS)
+    options = JSON.parse(options)
+    context.commit('SAVE_WITHOUT_COOKIE', options)
+  }
+}
 const getters = {
   GET_OPTIONS (state) {
     return state.Options
   }
-//   GET_INIT_VALUE(state){
-//     let options = window.localStorage.getItem(conf.CONNECT_OPTIONS)
-//     options = JSON.parse(options)
-//     context.commit('SAVE_OPTIONS', options)
-//   }
 }
 // const actions = {
 //   INIT_OPTIONS (context) {
@@ -38,6 +40,6 @@ const getters = {
 export default {
   state,
   mutations,
-  getters
-  // actions
+  getters,
+  actions
 }

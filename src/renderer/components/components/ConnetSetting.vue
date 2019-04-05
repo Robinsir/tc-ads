@@ -45,11 +45,11 @@
 <script >
 export default {
   created () {
-    this.connetInfo = this.$store.getters.GET_OPTIONS
+    this.$store.dispatch('GET_INIT_VALUE')
   },
-  data () {
-    return {
-      connectInfo: {}
+  computed: {
+    connectInfo () {
+      return this.$store.getters.GET_OPTIONS
     }
   },
   methods: {

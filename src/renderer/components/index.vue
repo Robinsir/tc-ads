@@ -27,7 +27,7 @@
 <script>
 import {ipcRenderer} from 'electron'
 import * as ipc from '@/../ipc'
-import * as conf from '@/conf'
+// import * as conf from '@/conf'
 import VariableItems from './components/VariableItems'
 import VariableInfo from './components/VariableInfo'
 import ConnetSetting from './components/ConnetSetting'
@@ -125,15 +125,10 @@ export default {
     },
     onSetOption (options) {
       console.log('run....')
-      // this.connetOptions = options
-      const options1 = window.localStorage.getItem(conf.CONNECT_OPTIONS)
-      this.connetOptions = JSON.parse(options1)
-      // this.$store.commit('SAVE_OPTIONS', options)
-      this.onTestAds()
+      this.connetOptions = options
+      // this.onTestAds()
     },
     onGetSymbolList () {
-      const options = window.localStorage.getItem(conf.CONNECT_OPTIONS)
-      this.connetOptions = JSON.parse(options)
       ipcRenderer.send(ipc.GET_SYMBOL_LIST, this.connetOptions)
     }
   }
