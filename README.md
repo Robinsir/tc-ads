@@ -1,8 +1,35 @@
-# tc-ads
+# TC ADS
 
-> An electron-vue project
+[![forthebadge](https://forthebadge.com/images/badges/uses-js.svg)](https://forthebadge.com)
+[![forthebadge](https://forthebadge.com/images/badges/powered-by-electricity.svg)](https://forthebadge.com)
+[![forthebadge](https://forthebadge.com/images/badges/made-with-vue.svg)](https://forthebadge.com)
 
-#### Build Setup
+## About 
+A project connect twincat2/3 ADS UI for Test and Study. 
+
+This project is the implementation of this [Node-ADS Project](https://github.com/roccomuso/node-ads) with UI , Thank you to these people.
+
+## Preview
+
+
+## Plan
+- Setting connect info √
+- connect and connect test √
+- Read register √
+  - add/delete register √
+  - read all register √
+  - listen register √
+- Write register 
+- UI 
+    - base ui √
+    - excessive animation
+    - more easy to use 
+    - hot key
+
+## Next
+- I will complete the project when I have time , Let me know if I'm worth continuing with the project.
+- Write register doesn't work yet, and I will fix it in next step.
+## Build Setup
 
 ``` bash
 # install dependencies

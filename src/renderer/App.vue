@@ -6,7 +6,7 @@
 
 <script>
   export default {
-    name: 'tc-ads'
+    name: 'TC_ADS'
   }
 </script>
 

@@ -2,7 +2,7 @@ import { ipcMain } from 'electron'
 import * as ipc from '../ipc'
 import * as ads from 'node-ads'
 import typeCover from './TypeCover'
-import * as conf from '@/conf'
+import * as conf from '../Renderer/conf'
 let options = {}
 let client = null
 function adsTest () {
