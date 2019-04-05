@@ -10,7 +10,7 @@ A project connect twincat2/3 ADS UI for Test and Study.
 This project is the implementation of this [Node-ADS Project](https://github.com/roccomuso/node-ads) with UI , Thank you to these people.
 
 ## Preview
-
+[preview](static/preview.png)
 
 ## Plan
 - Setting connect info √
