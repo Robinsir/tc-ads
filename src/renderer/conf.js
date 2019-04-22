@@ -1,4 +1,13 @@
 export const CONNECT_OPTIONS = 'CONNECT_OPTIONS'
+export const DEFUALT_OPTIONS = {
+  host: '801',
+  amsNetIdTarget: '192.168.9.10.1.1',
+  amsPortTarget: '801',
+  amsNetIdSource: '',
+  amsPortSource: '',
+  port: '',
+  timeout: '300'
+}
 export const TYPE_LENGTH = {
   'BOOL': 1,
   'BYTE': 1,

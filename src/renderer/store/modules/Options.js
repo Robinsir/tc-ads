@@ -13,10 +13,14 @@ const mutations = {
   }
 }
 const actions = {
-
   GET_INIT_VALUE (context) {
-    let options = window.localStorage.getItem(conf.CONNECT_OPTIONS)
-    options = JSON.parse(options)
+    // let options = window.localStorage.getItem(conf.CONNECT_OPTIONS)
+    let options = window.localStorage.getItem('config')
+    if (options == null) {
+      options = conf.DEFUALT_OPTIONS
+    } else {
+      options = JSON.parse(options)
+    }
     context.commit('SAVE_WITHOUT_COOKIE', options)
   }
 }
