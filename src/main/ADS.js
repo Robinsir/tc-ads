@@ -6,12 +6,13 @@ import * as conf from '../Renderer/conf'
 let options = {}
 let client = null
 function adsTest () {
-  console.log('conneting...')
   ipcMain.on(ipc.TEST, (event, arg) => {
     options = arg
+    console.log('ipc.test ...')
 
     client = ads.connect(options, function () {
       this.readDeviceInfo(function (err, result) {
+        console.log('TCL: adsTest -> err', err, result)
         if (err) event.sender.send(ipc.TEST, err)
         event.sender.send(ipc.TEST, result)
         client.end()

@@ -15,8 +15,9 @@
                 <el-button size="small" type="warning" @click="onListening">{{isOnListening?'关闭':'开启'}}监听</el-button>
                 <el-button size="small" @click="onGetSymbolList">获取SYMBOL列表</el-button>
                 <el-button size="small" type="danger" >全部写入</el-button>
+                <el-button size="small" type = "warning" @click="onCleanLists">清空列表</el-button>
               </div>
-              <variable-items :lists="variableLists" @change="onListsChange"></variable-items>
+              <variable-items :lists="variableLists" :loading='isLoading' @change="onListsChange"></variable-items>
               <el-button  class="add-item" type="primary" icon="el-icon-plus" circle @click="onAddOne"></el-button>
               <variable-info :addOne="showAdd" @close='onAddOneClose' @add="onAdd2List"></variable-info>   
           </el-main>
@@ -38,7 +39,8 @@ export default {
       asideWidth: '0',
       variableLists: [],
       windowHeight: 0,
-      isOnListening: false
+      isOnListening: false,
+      isLoading: false
     }
   },
   components: {
@@ -62,6 +64,7 @@ export default {
         confirmButtonText: '确定',
         dangerouslyUseHTMLString: true
       }).catch(_ => {})
+      this.isLoading = false
     })
 
     ipcRenderer.on(ipc.GET_SYMBOL_LIST, (event, arg) => {
@@ -107,10 +110,14 @@ export default {
         this.asideWidth = '0'
       }
     },
+    onCleanLists () {
+      this.variableLists = []
+    },
     onListsChange (list) {
       this.variableLists = list
     },
     onTestAds () {
+      this.isLoading = true
       ipcRenderer.send(ipc.TEST, this.connetOptions)
     },
     onListening () {
@@ -124,9 +131,8 @@ export default {
       }
     },
     onSetOption (options) {
-      console.log('run....')
       this.connetOptions = options
-      // this.onTestAds()
+      this.onTestAds()
     },
     onGetSymbolList () {
       ipcRenderer.send(ipc.GET_SYMBOL_LIST, this.connetOptions)

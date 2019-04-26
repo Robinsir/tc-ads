@@ -14,8 +14,7 @@ const mutations = {
 }
 const actions = {
   GET_INIT_VALUE (context) {
-    // let options = window.localStorage.getItem(conf.CONNECT_OPTIONS)
-    let options = window.localStorage.getItem('config')
+    let options = window.localStorage.getItem(conf.CONNECT_OPTIONS)
     if (options == null) {
       options = conf.DEFUALT_OPTIONS
     } else {

@@ -11,7 +11,9 @@ This project is the implementation of this [Node-ADS Project](https://github.com
 
 ## Preview
 ![preview](static/preview.png)
-
+![preview](static/preview1.png)
+![preview](static/preview2.png)
+![preview](static/preview3.png)
 ## Plan
 - Setting connect info √
 - connect and connect test √

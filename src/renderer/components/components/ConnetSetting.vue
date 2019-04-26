@@ -46,10 +46,11 @@
 export default {
   created () {
     this.$store.dispatch('GET_INIT_VALUE')
+    this.connectInfo = Object.assign({}, this.$store.getters.GET_OPTIONS)
   },
-  computed: {
-    connectInfo () {
-      return this.$store.getters.GET_OPTIONS
+  data () {
+    return {
+      connectInfo: []
     }
   },
   methods: {

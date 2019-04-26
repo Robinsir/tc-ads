@@ -2,7 +2,8 @@
     <div class="variable-list">
         <el-table
         highlight-current-row
-        :data="listTable">
+        :data="listTable"
+        v-loading='loading'>
         <el-table-column
           type="index"
           width="50">
@@ -62,7 +63,8 @@ import {ipcRenderer} from 'electron'
 export default {
   name: 'varialbe-itmes',
   props: {
-    lists: Array
+    lists: Array,
+    loading: Boolean
   },
   computed: {
     listTable () {
