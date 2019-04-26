@@ -17,7 +17,9 @@
                 <el-button size="small" type="danger" >全部写入</el-button>
                 <el-button size="small" type = "warning" @click="onCleanLists">清空列表</el-button>
               </div>
-              <variable-items :lists="variableLists" :loading='isLoading' @change="onListsChange"></variable-items>
+              <variable-items :lists="currVariableLists" :loading='isLoading' @change="onListsChange"></variable-items>
+              <variable-pagination :data="variableLists" @current="onCurrentLists">
+              </variable-pagination>
               <el-button  class="add-item" type="primary" icon="el-icon-plus" circle @click="onAddOne"></el-button>
               <variable-info :addOne="showAdd" @close='onAddOneClose' @add="onAdd2List"></variable-info>   
           </el-main>
@@ -31,13 +33,15 @@ import * as ipc from '@/../ipc'
 // import * as conf from '@/conf'
 import VariableItems from './components/VariableItems'
 import VariableInfo from './components/VariableInfo'
+import VariablePagination from './components/VariablePagination'
 import ConnetSetting from './components/ConnetSetting'
 export default {
   data () {
     return {
       showAdd: false,
       asideWidth: '0',
-      variableLists: [],
+      variableLists: [], // 列表所有内容
+      currVariableLists: [], // 分页列表中内容
       windowHeight: 0,
       isOnListening: false,
       isLoading: false
@@ -46,7 +50,8 @@ export default {
   components: {
     VariableItems,
     VariableInfo,
-    ConnetSetting
+    ConnetSetting,
+    VariablePagination
 
   },
   created () {
@@ -123,12 +128,16 @@ export default {
     onListening () {
       this.isOnListening = !this.isOnListening
       if (this.isOnListening) {
-        const list = this.variableLists
+        const list = this.currVariableLists
         let ops = this.connetOptions
         ipcRenderer.send(ipc.GET_LISTEN_VALUE, {ops, list})
       } else {
         ipcRenderer.send(ipc.CLOSE_LISTEN_VALUE)
       }
+    },
+    onCurrentLists (list) {
+      this.currVariableLists = list
+      console.log('TCL: onCurrentLists -> list', list)
     },
     onSetOption (options) {
       this.connetOptions = options
